@@ -14,6 +14,8 @@ CREATE TABLE Quantite (
     PRIMARY KEY (`idP`)
 );
 
+/* TRIGGER pour la colonne quantité*/
+
 DELIMITER $$
 
 CREATE TRIGGER ajuster_quantite_avant_insert
@@ -45,6 +47,8 @@ BEGIN
         SET NEW.quantite = CEIL(NEW.estimation / contenance);
     END IF;
 END$$
+
+/* TRIGGER pour la colonne estimation*/
 
 CREATE TRIGGER estimation_non_negative
 BEFORE UPDATE ON Quantite

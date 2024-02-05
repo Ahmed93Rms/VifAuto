@@ -65,6 +65,7 @@
                 </section>
                 <section class="list" id="list">
                         <h1 class="center">Liste des produits</h1>
+                        <!-- Affichage des alertes -->
                         <?php   foreach ($nomPr as $produit) {
                                         if ($produit['estimation'] == 0) {
                                                 echo '<div class="alert">
@@ -81,6 +82,7 @@
                                         }
                                 }
                         ?>
+                        
                         <form action="?controller=home&action=home" method="post" style="text-align: center;">
                                 <div>Retrouver un produit : 
                                 <input type="text" name="find" placeholder="Entrez une valeur" />
@@ -98,11 +100,13 @@
                                         <th>Description</th>
                                         <th class="sansBordure"></th>
                                 </tr>
+                                <!-- Recuperation des infos dans la bdd pour la liste -->
                                 <?php foreach ($nomPr as $item) : ?>
                                 <tr>
                                         <td><?php echo $item['nomP']; ?></td>
                                         <td><?php echo $item['contenanceP']; ?></td>
                                         <td><?php echo $item['quantite']; ?></td>
+                                        <!-- Couleur dans la colonne estimation -->
                                         <?php if ($item['estimation'] <= 150) {
                                                 echo '<td style="background-color:#e04f4f;">'.$item['estimation'].'</td>';
                                         } elseif ($item['estimation'] <= 500){
@@ -112,6 +116,7 @@
                                                 echo '<td style="background-color:#4fe06a;">'.$item['estimation'].'</td>';
                                         }
                                         ?>
+
                                         <td><?php echo $item['description']; ?></td>
                                         <td class="sansBordure">
                                                 <a href="?controller=set&action=remove&idP=<?php echo $item['idP'] ?>">
@@ -120,6 +125,7 @@
                                         </td>
                                 </tr>
                                 <?php endforeach ?> 
+                                
                         </table>                        
                 </section>
                 <section class="graph" id="graph">

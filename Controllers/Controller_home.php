@@ -4,15 +4,18 @@ class Controller_home extends Controller{
 
     public function action_home()
     {
+        //Initialisation des variables
         $errorP  ="";
-        $filtres = [];
         $alert    = ""; 
 
         $m = Model::getModel();
+        //Récupère le nom des produits
         $selectPr = $m->getProduit();
+        //Récupère toutes les infos d'un produit
         $nomPr = $m->listProduct();
 
 
+        //Ajouter un produit et vérifier son existance
         if (!empty($_POST["ref"]) && !empty($_POST["litre"])) {
             $name        = htmlspecialchars($_POST["ref"]);
             $contenance  = htmlspecialchars($_POST["litre"]);
@@ -27,6 +30,7 @@ class Controller_home extends Controller{
 
         }
 
+        //Augmenter la quantité d'un produit
         if (!empty($_POST["produit"]) && !empty($_POST["aug"])) {
             $produit = htmlspecialchars($_POST["produit"]);
             $aug     = htmlspecialchars($_POST["aug"]);
@@ -35,6 +39,7 @@ class Controller_home extends Controller{
             header('Location: index.php');
         }
 
+        //Diminuer la quantité d'un produit
         if (!empty($_POST["produit"]) && !empty($_POST["dim"])) {
             $produit = htmlspecialchars($_POST["produit"]);
             $dim     = htmlspecialchars($_POST["dim"]);
@@ -43,6 +48,7 @@ class Controller_home extends Controller{
             header('Location: index.php');
         }
 
+        //Supprimer un produit
         if (isset($_GET["idP"]) and preg_match("/^[1-9]\d*$/", $_GET["idP"])) {
             $id = $_GET["idP"];
             $m->removeProduct($id);
@@ -86,10 +92,18 @@ class Controller_home extends Controller{
             }
         }
 
-        $data = ['filtres'=>$filtres, 'errorP'=>$errorP, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert];
+        /**
+        * Affiche la vue
+        * @param 'home' nom de la vue
+        * @param array $data tableau contenant les données à passer à la vue
+        */
+        $data = ['errorP'=>$errorP, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert];
         $this->render('home', $data);
     }
 
+    /**
+     * Affiche l'action home par defaut
+     */
     public function action_default()
     {
         $this->action_home();
