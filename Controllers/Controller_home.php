@@ -82,15 +82,26 @@ class Controller_home extends Controller{
             // Si aucun formulaire n'a été soumis, récupérer tous les produits
             $nomPr = $m->listProduct();
         }
-
-        $alert    = ""; // Initialiser l'alerte comme fausse
-
+        
         // Vérifier si un produit a une estimation inférieure à 150mL
         foreach ($nomPr as $produit) {
             if ($produit['estimation'] < 150) {
                 $alert = '<p style="color:red; text-align:center;">Le produit '.$produit['nomP'].' risque d\'être épuiser.</p>';
             }
         }
+
+        //Importer le fichier XML et convertir les information dans la bdd
+        /*if (!empty($_FILES["fichierXML"])) {
+            $xmlFile = $_FILES['fichierXML']['tmp_name'];
+            $xmlContent = simplexml_load_file($xmlFile);
+            foreach ($xmlContent as $mix) {
+                $mixName = (string)$mix->Mix_name;
+                $mixMl = (float)$mix->Mix_ml;
+                $m->importXML($mixName, $mixMl);
+            }
+
+        }*/
+
 
         /**
         * Affiche la vue

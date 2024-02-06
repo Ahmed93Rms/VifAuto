@@ -118,11 +118,9 @@ class Model {
         $exists = $req->fetchColumn() > 0;
 
         if ($exists) {
-            // Mise à jour de l'estimation pour un produit avec une valeur existante
             $req = $this->db->prepare('UPDATE Quantite SET estimation = estimation + ? WHERE idP = ?');
             $req->execute([$aug, $produit]);
         } else {
-            // Mise à jour de l'estimation pour un produit avec une valeur null
             $req = $this->db->prepare('INSERT INTO Quantite (idP, estimation) VALUES (?, ?)');
             $req->execute([$produit, $aug]);
         }
@@ -134,18 +132,14 @@ class Model {
      * @param int $dim
      */
     public function remQuantity($produit, $dim) {
-        // D'abord, récupérons la valeur actuelle d'estimation
         $req = $this->db->prepare('SELECT estimation FROM Quantite WHERE idP = ?');
         $req->execute([$produit]);
         $estimationActuelle = $req->fetchColumn();
     
-        // Calculons la nouvelle estimation et assurons-nous qu'elle n'est pas négative
         $nouvelleEstimation = max(0, $estimationActuelle - $dim);
     
-        // Mettons à jour l'estimation avec la nouvelle valeur qui n'est jamais négative
         $req = $this->db->prepare('UPDATE Quantite SET estimation = ? WHERE idP = ?');
         $req->execute([$nouvelleEstimation, $produit]);
-        // Pas besoin de fetchAll puisque c'est une requête de mise à jour
     }
 
     /**
@@ -153,8 +147,28 @@ class Model {
      * @param int $id
      */
     public function removeProduct($id) {
-        $req = $this->db->prepare("DELETE FROM Produits WHERE idP = ?");
+        $req = $this->db->prepare('DELETE FROM Produits WHERE idP = ?');
         $req->execute([$id]);
         return (bool) $req->rowCount();
     }
+
+    /**
+     * Méthode permettant d'importer un fichier XML dans la bdd
+     * @param string $mixName
+     * @param float $mixMl
+     */
+    /*public function importXML($mixName, $mixMl) {
+        //On récupère les infos de la bdd avant modification
+        $req = $this->db->prepare('SELECT estimation FROM Quantite JOIN Produits WHERE nomP = ?');
+        $req->execute([$mixName]);
+        $result = $req->fetch(PDO::FETCH_ASSOC);
+
+        //Vérifier si nomP existe dans la base de données.
+        if ($result) {
+            $new = $result['estimation'] - $mixMl;
+            $req = $this->db->prepare('UPDATE your_table SET estimation = ? WHERE nomP = ?');
+            $req->execute([$new,$mixName]);
+        }
+    }*/
+
 }

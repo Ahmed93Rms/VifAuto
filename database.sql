@@ -1,8 +1,8 @@
 CREATE TABLE Produits (
     `idP` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-    `nomP` varchar(100) DEFAULT NULL,
-    `contenanceP` float DEFAULT NULL,
-    `description` varchar(255) DEFAULT NULL,
+    `nomP` varchar(100),
+    `contenanceP` float,
+    `description` varchar(255),
     PRIMARY KEY (`idP`),
     UNIQUE KEY `idP` (`idP`)
 );
@@ -10,7 +10,7 @@ CREATE TABLE Produits (
 CREATE TABLE Quantite (
     `idP` int NOT NULL,
     `quantite` varchar(100) DEFAULT '0',
-    `estimation` float DEFAULT '0',
+    `estimation` float DEFAULT 'NULL',
     PRIMARY KEY (`idP`)
 );
 

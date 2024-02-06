@@ -63,6 +63,12 @@
                                 </form>
                         </div>
                 </section>
+                <section id="XML" class ="import">
+                        <form action="?controller=home&action=home" method="post" enctype="multipart/form-data">
+                                <div>Importer un fichier XML : <input type="file" name="fichierXML"/></div>
+                                <button type="submit" class="bt black">Importer</button>
+                        </form>
+                </section>
                 <section class="list" id="list">
                         <h1 class="center">Liste des produits</h1>
                         <!-- Affichage des alertes -->
