@@ -9,11 +9,14 @@
         <link rel="stylesheet" href="Content/css/style.css"/>
         <link rel="icon" href="Content/image/vifauto.png" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+        <script src="../Content/js/script.js" defer></script>
 </head>
 <body>
         <header>
                 <nav class="nb">
-                        <div><img src="Content/image/vifauto_2.png" class="logoHead" alt="vifautologohead"></div>
+                        <a href="index.php"><img src="Content/image/vifauto_2.png" class="logoHead" alt="vifautologohead"></a>
                         <div class="m_nb">
                                 <a href="#import" class="nb_a"><span class="material-symbols-outlined">download</span>Importer</a>
                                 <a href="#list" class="nb_a"><span class="material-symbols-outlined">menu</span>Produits</a>
@@ -22,12 +25,12 @@
                 </nav>
         </header>
         <main>
-                <h1 class="center">Modifier votre liste de produit</h1>
-                <p class="grey center"><u>Pour les valeurs decimal, il faut mettre un point et pas une virgule. (Ex: 3.5)</u></p>
+                <h1 class="center" style="margin-top: 100px;">Modifier votre liste de produit</h1>
+                <p class="grey center"><u>Pour les valeurs decimal, il faut mettre un point et pas une virgule. (Ex: 317.5)</u></p>
                 <section class="form" id="import">
                         <div class="block blue">
-                                <h1 style="color: #0085FF;">Ajouter un produit</h1>
-                                <form method="post" action="?controller=home&action=home">
+                                <h1 style="color: #0085FF; cursor: pointer;">Ajouter un produit inexistant</h1>
+                                <form method="post" action="?controller=home&action=home" style="display: none;">
                                         <div>Reference du produit : <input type="text" name="ref" required></div>
                                         <div>Contenance du produit(mL) : <input type="text" name="litre" required></div>
                                         <div class="textDesc">Description : <textarea name="desc" placeholder="facultatif"></textarea></div>
@@ -36,8 +39,8 @@
                                 </form>
                         </div>
                         <div class="block green">
-                                <h1 style="color: #2C964D;">Augmenter la quantité d'un produit</h1>
-                                <form method="post" action="?controller=home&action=home">
+                                <h1 style="color: #2C964D; cursor: pointer;">Augmenter la quantité d'un produit</h1>
+                                <form method="post" action="?controller=home&action=home" style="display: none;">
                                         <div>Produit : 
                                         <select id="productSelect" name="produit">
                                                 <?php foreach ($selectPr as $p): ?>
@@ -50,8 +53,8 @@
                                 </form>
                         </div>
                         <div class="block red">
-                                <h1 style="color: #FF0101;">Diminuer la quantité d'un produit</h1>
-                                <form method="post" action="?controller=home&action=home">
+                                <h1 style="color: #FF0101; cursor: pointer;">Diminuer la quantité d'un produit</h1>
+                                <form method="post" action="?controller=home&action=home" style="display: none;">
                                         <div>Produit : 
                                         <select id="productSelect" name="produit">
                                                 <?php foreach ($selectPr as $p): ?>
@@ -65,14 +68,15 @@
                 </section>
                 <section id="XML" class ="import">
                         <form action="?controller=home&action=home" method="post" enctype="multipart/form-data">
-                                <div>Importer un fichier XML : <input type="file" name="fichierXML"/></div>
+                                <div>Importer un fichier XML : <input type="file" name="fichierXML" required/></div>
                                 <button type="submit" class="bt black">Importer</button>
                         </form>
                 </section>
                 <section class="list" id="list">
                         <h1 class="center">Liste des produits</h1>
                         <!-- Affichage des alertes -->
-                        <?php   foreach ($nomPr as $produit) {
+                        <?php
+                                foreach ($nomPr as $produit) {
                                         if ($produit['estimation'] == 0) {
                                                 echo '<div class="alert">
                                                 <span class="material-symbols-outlined">
@@ -125,7 +129,7 @@
 
                                         <td><?php echo $item['description']; ?></td>
                                         <td class="sansBordure">
-                                                <a href="?controller=set&action=remove&idP=<?php echo $item['idP'] ?>">
+                                                <a href="?controller=set&action=remove&idP=<?php echo $item['idP'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le produit <?php echo $item['nomP']; ?>');">
                                                         <img class="icone" src="Content/image/remove-icon.png" alt="supprimer"/>
                                                 </a>
                                         </td>
@@ -136,18 +140,42 @@
                 </section>
                 <section class="graph" id="graph">
                         <h1 class="center">Evolution d'un produits</h1>
-                        <form action="" method="post" class="center">
-                                <h3>Sélectionner un produit</h3>
-                                <div>
-                                        <select id="productSelect" name="produit">
-                                        <?php foreach ($selectPr as $p): ?>
-                                        <option value="<?php echo $p['idP']; ?>"><?php echo $p['nomP']; ?></option>
-                                        <?php endforeach; ?>
-                                        </select>
-                                </div>
-                                <button type="submit" class="bt black">Afficher</button>
-                        </form>
-                        
+                        <div class="blockG">
+                                <article>
+                                        <form action="" method="post" class="center">
+                                                <h3>Sélectionner un produit</h3>
+                                                <div>
+                                                        <select id="productSelect" name="produitG" required>
+                                                        <?php foreach ($selectPr as $p): ?>
+                                                        <option value="<?php echo $p['idP']; ?>"><?php echo $p['nomP']; ?></option>
+                                                        <?php endforeach; ?>
+                                                        </select>
+                                                </div>
+                                                <button type="submit" class="bt black">Afficher</button>
+                                        </form>
+                                </article>
+                                <article class="graphique">
+                                        <canvas id="monGraphique"></canvas>
+                                        <script>
+                                        // Les données PHP sont maintenant disponibles en tant que variable JavaScript
+                                        var donnees = <?php echo $donneesJson; ?>;
+                                        var ctx = document.getElementById('monGraphique').getContext('2d');
+                                        var chart = new Chart(ctx, {
+                                        type: 'line', // Le type de graphique
+                                        data: {
+                                                labels: donnees.map(d => d.date), // Extraction des dates pour les labels de l'axe X
+                                                datasets: [{
+                                                label: '',
+                                                backgroundColor: 'rgb(0,0,0)',
+                                                borderColor: 'rgb(0,0,0)',
+                                                data: donnees.map(d => d.valeur), // Extraction des valeurs pour l'axe Y
+                                                }]
+                                        },
+                                        options: {}
+                                        });
+                                        </script>
+                                </article>
+                        </div>
                 </section>
         </main>
         <footer>

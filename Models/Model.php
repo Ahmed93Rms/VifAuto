@@ -152,23 +152,24 @@ class Model {
         return (bool) $req->rowCount();
     }
 
-    /**
-     * Méthode permettant d'importer un fichier XML dans la bdd
-     * @param string $mixName
-     * @param float $mixMl
-     */
-    /*public function importXML($mixName, $mixMl) {
-        //On récupère les infos de la bdd avant modification
-        $req = $this->db->prepare('SELECT estimation FROM Quantite JOIN Produits WHERE nomP = ?');
-        $req->execute([$mixName]);
-        $result = $req->fetch(PDO::FETCH_ASSOC);
+    public function updateFromXML($nomProduit, $quantiteMl) {
+        $req = $this->db->prepare('SELECT idP FROM Produits WHERE nomP = ?');
+        $req->execute([$nomProduit]);
+        $nom = $req->fetchColumn();
 
-        //Vérifier si nomP existe dans la base de données.
-        if ($result) {
-            $new = $result['estimation'] - $mixMl;
-            $req = $this->db->prepare('UPDATE your_table SET estimation = ? WHERE nomP = ?');
-            $req->execute([$new,$mixName]);
+        if($nom) {
+            $req = $this->db->prepare('UPDATE Quantite SET estimation = estimation - ? WHERE idP = ?');
+            $req->execute([$quantiteMl, $nom]);
+            return $req->fetchAll();
+        } else {
+            echo "Produit non trouvé : " . $nomProduit . "\n";
         }
-    }*/
+    }
+
+    public function graphique($nomP) {
+        $req = $this->db->prepare('SELECT valeur, date FROM graphique WHERE idP = ?');
+        $req->execute([$nomP]);
+        return $req->fetchAll();
+    }
 
 }

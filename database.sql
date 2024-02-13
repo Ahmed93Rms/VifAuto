@@ -14,6 +14,12 @@ CREATE TABLE Quantite (
     PRIMARY KEY (`idP`)
 );
 
+CREATE TABLE Graphique (
+    `idP` int NOT NULL,
+    `valeur` varchar(100),
+    `date` datetime DEFAULT CURRENT_TIMESTAMP
+);
+
 /* TRIGGER pour la colonne quantité*/
 
 DELIMITER $$
@@ -57,6 +63,18 @@ BEGIN
     -- S'assurer que la nouvelle estimation ne soit pas négative
     IF NEW.estimation < 0 THEN
         SET NEW.estimation = 0;
+    END IF;
+END$$
+
+/* TRIGGER pour la colonne valeur*/
+
+CREATE TRIGGER apres_mise_a_jour_estimation
+AFTER UPDATE ON Quantite
+FOR EACH ROW
+BEGIN
+    IF NEW.estimation <> OLD.estimation THEN
+        INSERT INTO graphique (idP, valeur, date)
+        VALUES (NEW.idP, NEW.estimation, CURRENT_TIMESTAMP);
     END IF;
 END$$
 

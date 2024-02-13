@@ -91,16 +91,29 @@ class Controller_home extends Controller{
         }
 
         //Importer le fichier XML et convertir les information dans la bdd
-        /*if (!empty($_FILES["fichierXML"])) {
-            $xmlFile = $_FILES['fichierXML']['tmp_name'];
-            $xmlContent = simplexml_load_file($xmlFile);
-            foreach ($xmlContent as $mix) {
-                $mixName = (string)$mix->Mix_name;
-                $mixMl = (float)$mix->Mix_ml;
-                $m->importXML($mixName, $mixMl);
-            }
+        if (isset($_FILES["fichierXML"])) {
+            $XML = $_FILES["fichierXML"];
+            
+            // Exécuter le script Python et récupérer la sortie sous forme de chaîne JSON
+            $output = shell_exec("python ../test.py");
+            // Convertir la sortie JSON en tableau associatif PHP
+            $mixData = json_decode($output, true);
 
-        }*/
+            // Vérifier si $mixData contient bien les données
+            if ($mixData) {
+                foreach ($mixData as $nomProduit => $quantiteMl) {
+                    // Appeler la fonction de mise à jour pour chaque produit
+                    // Assurez-vous d'avoir une méthode dans votre modèle qui corresponde à cette fonctionnalité
+                    $m->updateFromXML($nomProduit, $quantiteMl);
+                }
+            }
+        }
+
+        if (isset($_POST["produitG"])) {
+            $nom         = htmlspecialchars($_POST["produitG"]);
+            $result      = $m->graphique($nom);
+            $donneesJson = json_encode($result);
+        }
 
 
         /**
@@ -108,7 +121,7 @@ class Controller_home extends Controller{
         * @param 'home' nom de la vue
         * @param array $data tableau contenant les données à passer à la vue
         */
-        $data = ['errorP'=>$errorP, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert];
+        $data = ['errorP'=>$errorP, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson];
         $this->render('home', $data);
     }
 
