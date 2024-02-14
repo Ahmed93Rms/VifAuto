@@ -155,12 +155,12 @@ class Model {
     public function updateFromXML($nomProduit, $quantiteMl) {
         $req = $this->db->prepare('SELECT idP FROM Produits WHERE nomP = ?');
         $req->execute([$nomProduit]);
-        $nom = $req->fetchColumn();
+        $idP = $req->fetchColumn();
 
-        if($nom) {
+        if ($idP) {
             $req = $this->db->prepare('UPDATE Quantite SET estimation = estimation - ? WHERE idP = ?');
-            $req->execute([$quantiteMl, $nom]);
-            return $req->fetchAll();
+            // Passer $idP qui est une valeur scalaire, pas un tableau
+            $req->execute([$quantiteMl, $idP]);
         } else {
             echo "Produit non trouvé : " . $nomProduit . "\n";
         }

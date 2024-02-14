@@ -11,8 +11,23 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-        <script src="../Content/js/script.js" defer></script>
 </head>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Sélectionner tous les éléments <h1> dans les blocs
+        const headers = document.querySelectorAll('.block > h1');
+
+                headers.forEach(header => {
+                        header.addEventListener('click', function() {
+                        // Trouver le formulaire frère directement après le <h1> cliqué
+                        const form = this.nextElementSibling;
+
+                        // Basculer l'affichage du formulaire
+                        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+                        });
+                });
+        });
+</script>
 <body>
         <header>
                 <nav class="nb">
@@ -25,9 +40,9 @@
                 </nav>
         </header>
         <main>
-                <h1 class="center" style="margin-top: 100px;">Modifier votre liste de produit</h1>
+                <h1 class="center" style="margin-top: 100px;" id="import">Modifier votre liste de produit</h1>
                 <p class="grey center"><u>Pour les valeurs decimal, il faut mettre un point et pas une virgule. (Ex: 317.5)</u></p>
-                <section class="form" id="import">
+                <section class="form">
                         <div class="block blue">
                                 <h1 style="color: #0085FF; cursor: pointer;">Ajouter un produit inexistant</h1>
                                 <form method="post" action="?controller=home&action=home" style="display: none;">
@@ -157,7 +172,6 @@
                                 <article class="graphique">
                                         <canvas id="monGraphique"></canvas>
                                         <script>
-                                        // Les données PHP sont maintenant disponibles en tant que variable JavaScript
                                         var donnees = <?php echo $donneesJson; ?>;
                                         var ctx = document.getElementById('monGraphique').getContext('2d');
                                         var chart = new Chart(ctx, {
