@@ -172,4 +172,9 @@ class Model {
         return $req->fetchAll();
     }
 
+    public function updateDesc($description, $idP) {
+        $req = $this->db->prepare('UPDATE Produits SET description = ? WHERE idP = ?');
+        $req->execute([$description, $idP]); 
+    }
+
 }

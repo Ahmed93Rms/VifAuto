@@ -82,13 +82,6 @@ class Controller_home extends Controller{
             // Si aucun formulaire n'a été soumis, récupérer tous les produits
             $nomPr = $m->listProduct();
         }
-        
-        // Vérifier si un produit a une estimation inférieure à 150mL
-        foreach ($nomPr as $produit) {
-            if ($produit['estimation'] < 150) {
-                $alert = '<p style="color:red; text-align:center;">Le produit '.$produit['nomP'].' risque d\'être épuiser.</p>';
-            }
-        }
 
         //Importer le fichier XML et convertir les information dans la bdd
         if (!empty($_FILES["fichierXML"])) {
@@ -101,13 +94,22 @@ class Controller_home extends Controller{
             }
         }
 
-        $nom = 17;
+        //Affichage du graphique 
+        $nom = 1;
         if (isset($_POST["produitG"])) {
-            $nom         = htmlspecialchars($_POST["produitG"]);
+            $nom = htmlspecialchars($_POST["produitG"]);
         }
         $result      = $m->graphique($nom);
         $donneesJson = json_encode($result);
 
+        //Modifier la description
+        if (isset($_POST['idP']) && isset($_POST['description'])) {
+            $idP         = $_POST['idP'];
+            $description = htmlspecialchars($_POST['description']);
+            $m->updateDesc($description,$idP);
+    
+            echo "Description mise à jour.";
+        }
 
         /**
         * Affiche la vue

@@ -69,6 +69,7 @@ header {
     box-shadow: 0 8px 10px -8px grey;
     position: fixed;
     top: 0;
+    left: 0;
 }
 
 .nb {

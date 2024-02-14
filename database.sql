@@ -1,3 +1,5 @@
+/*TABLE pour la bdd*/
+
 CREATE TABLE Produits (
     `idP` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
     `nomP` varchar(100),
@@ -9,8 +11,8 @@ CREATE TABLE Produits (
 
 CREATE TABLE Quantite (
     `idP` int NOT NULL,
-    `quantite` varchar(100) DEFAULT '0',
-    `estimation` float DEFAULT 'NULL',
+    `quantite` varchar(100),
+    `estimation` float,
     PRIMARY KEY (`idP`)
 );
 
@@ -30,11 +32,9 @@ FOR EACH ROW
 BEGIN
     DECLARE contenance FLOAT;
 
-    -- Récupérer la contenanceP du produit correspondant
     SELECT contenanceP INTO contenance FROM Produits WHERE idP = NEW.idP;
 
-    -- Calculer la nouvelle quantité et ajuster avant l'insertion
-    IF contenance > 0 THEN -- S'assurer que contenanceP n'est pas 0 pour éviter division par 0
+    IF contenance > 0 THEN 
         SET NEW.quantite = CEIL(NEW.estimation / contenance);
     END IF;
 END$$
@@ -45,10 +45,8 @@ FOR EACH ROW
 BEGIN
     DECLARE contenance FLOAT;
 
-    -- Récupérer la contenanceP du produit correspondant
     SELECT contenanceP INTO contenance FROM Produits WHERE idP = NEW.idP;
 
-    -- Calculer la nouvelle quantité et ajuster avant la mise à jour
     IF contenance > 0 THEN
         SET NEW.quantite = CEIL(NEW.estimation / contenance);
     END IF;
@@ -60,7 +58,6 @@ CREATE TRIGGER estimation_non_negative
 BEFORE UPDATE ON Quantite
 FOR EACH ROW
 BEGIN
-    -- S'assurer que la nouvelle estimation ne soit pas négative
     IF NEW.estimation < 0 THEN
         SET NEW.estimation = 0;
     END IF;
@@ -79,3 +76,164 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+/*DONNEES dans la bdd*/
+
+INSERT INTO Produits VALUES (1, 300, 1000,'');
+INSERT INTO Produits VALUES (2, 301, 3500,'');
+INSERT INTO Produits VALUES (3, 302, 1000,'');
+INSERT INTO Produits VALUES (4, 308, 500,'');
+INSERT INTO Produits VALUES (5, 310, 500,'');
+INSERT INTO Produits VALUES (6, 311, 1000,'');
+INSERT INTO Produits VALUES (7, 312, 500,'');
+INSERT INTO Produits VALUES (8, 313, 500,'');
+INSERT INTO Produits VALUES (9, 314, 500,'');
+INSERT INTO Produits VALUES (10, 315, 500,'');
+INSERT INTO Produits VALUES (11, 316, 1000,'');
+INSERT INTO Produits VALUES (12, 317, 500,'');
+INSERT INTO Produits VALUES (13, 320, 500,'');
+INSERT INTO Produits VALUES (14, 321, 1000,'');
+INSERT INTO Produits VALUES (15, 322, 1000,'');
+INSERT INTO Produits VALUES (16, 323, 500,'');
+INSERT INTO Produits VALUES (17, 324, 500,'');
+INSERT INTO Produits VALUES (18, 325, 1000,'');
+INSERT INTO Produits VALUES (19, 326, 1000,'');
+INSERT INTO Produits VALUES (20, 327, 1000,'');
+INSERT INTO Produits VALUES (21, 328, 1000,'');
+INSERT INTO Produits VALUES (22, 329, 1000,'');
+INSERT INTO Produits VALUES (23, 330, 1000,'');
+INSERT INTO Produits VALUES (24, 331, 1000,'');
+INSERT INTO Produits VALUES (25, 332, 1000,'');
+INSERT INTO Produits VALUES (26, 341, 1000,'');
+INSERT INTO Produits VALUES (27, 342, 1000,'');
+INSERT INTO Produits VALUES (28, 343, 3500,'');
+INSERT INTO Produits VALUES (29, 344, 1000,'');
+INSERT INTO Produits VALUES (30, 345, 3500,'');
+INSERT INTO Produits VALUES (31, 346, 500,'');
+INSERT INTO Produits VALUES (32, 351, 1000,'');
+INSERT INTO Produits VALUES (33, 352, 1000,'');
+INSERT INTO Produits VALUES (34, 361, 3500,'');
+INSERT INTO Produits VALUES (35, 362, 1000,'');
+INSERT INTO Produits VALUES (36, 363, 1000,'');
+INSERT INTO Produits VALUES (37, 364, 1000,'');
+INSERT INTO Produits VALUES (38, 365, 500,'');
+INSERT INTO Produits VALUES (39, 366, 3500,'');
+INSERT INTO Produits VALUES (40, 367, 1000,'');
+INSERT INTO Produits VALUES (41, 368, 3500,'');
+INSERT INTO Produits VALUES (42, 400, 3500,'');
+INSERT INTO Produits VALUES (43, 401, 3500,'');
+INSERT INTO Produits VALUES (44, 402, 3500,'');
+INSERT INTO Produits VALUES (45, 403, 1000,'');
+INSERT INTO Produits VALUES (46, 404, 1000,'');
+INSERT INTO Produits VALUES (47, 405, 3500,'');
+INSERT INTO Produits VALUES (48, 406, 3500,'');
+INSERT INTO Produits VALUES (49, 407, 1000,'');
+INSERT INTO Produits VALUES (50, 408, 1000,'');
+INSERT INTO Produits VALUES (51, 410, 1000,'');
+INSERT INTO Produits VALUES (52, 415, 500,'');
+INSERT INTO Produits VALUES (53, 416, 500,'');
+INSERT INTO Produits VALUES (54, 420, 1000,'');
+INSERT INTO Produits VALUES (55, 421, 1000,'');
+INSERT INTO Produits VALUES (56, 422, 500,'');
+INSERT INTO Produits VALUES (57, 430, 1000,'');
+INSERT INTO Produits VALUES (58, 440, 500,'');
+INSERT INTO Produits VALUES (59, 450, 1000,'');
+INSERT INTO Produits VALUES (60, 451, 1000,'');
+INSERT INTO Produits VALUES (61, 452, 500,'');
+INSERT INTO Produits VALUES (62, 453, 500,'');
+INSERT INTO Produits VALUES (63, 460, 1000,'');
+INSERT INTO Produits VALUES (64, 470, 1000,'');
+INSERT INTO Produits VALUES (65, 471, 1000,'');
+INSERT INTO Produits VALUES (66, 472, 1000,'');
+INSERT INTO Produits VALUES (67, 480, 500,'');
+INSERT INTO Produits VALUES (68, 481, 1000,'');
+INSERT INTO Produits VALUES (69, 495, 1000,'');
+INSERT INTO Produits VALUES (70, 496, 500,'');
+INSERT INTO Produits VALUES (71, 500, 500,'');
+INSERT INTO Produits VALUES (72, 501, 500,'');
+INSERT INTO Produits VALUES (73, 502, 500,'');
+INSERT INTO Produits VALUES (74, 503, 500,'');
+INSERT INTO Produits VALUES (75, 504, 500,'');
+INSERT INTO Produits VALUES (76, 505, 500,'');
+INSERT INTO Produits VALUES (77, 822, 500,'');
+INSERT INTO Produits VALUES (78, 825, 1000,'');
+
+
+INSERT INTO Quantite VALUES (1,0, 1299.2);
+INSERT INTO Quantite VALUES (2,0, 804.8);
+INSERT INTO Quantite VALUES (3,0, 1334.1);
+INSERT INTO Quantite VALUES (4,0, 499.7);
+INSERT INTO Quantite VALUES (5,0, 390);
+INSERT INTO Quantite VALUES (6,0, 938.5);
+INSERT INTO Quantite VALUES (7,0, 774.2);
+INSERT INTO Quantite VALUES (8,0, 337.5);
+INSERT INTO Quantite VALUES (9,0, 748.1);
+INSERT INTO Quantite VALUES (10,0, 281.7);
+INSERT INTO Quantite VALUES (11,0, 923.5);
+INSERT INTO Quantite VALUES (12,0, 330);
+INSERT INTO Quantite VALUES (13,0, 852.3);
+INSERT INTO Quantite VALUES (14,0, 510.2);
+INSERT INTO Quantite VALUES (15,0, 1549.6);
+INSERT INTO Quantite VALUES (16,0, 769.5);
+INSERT INTO Quantite VALUES (17,0, 783.5);
+INSERT INTO Quantite VALUES (18,0, 527.5);
+INSERT INTO Quantite VALUES (19,0, 445.3);
+INSERT INTO Quantite VALUES (20,0, 173.6);
+INSERT INTO Quantite VALUES (21,0, 694.9);
+INSERT INTO Quantite VALUES (22,0, 1762.3);
+INSERT INTO Quantite VALUES (23,0, 511.6);
+INSERT INTO Quantite VALUES (24,0, 709.5);
+INSERT INTO Quantite VALUES (25,0, 1312.1);
+INSERT INTO Quantite VALUES (26,0, 610.7);
+INSERT INTO Quantite VALUES (27,0, 1320.4);
+INSERT INTO Quantite VALUES (28,0, 5460.1);
+INSERT INTO Quantite VALUES (29,0, 1275.3);
+INSERT INTO Quantite VALUES (30,0, 5253.6);
+INSERT INTO Quantite VALUES (31,0, 290);
+INSERT INTO Quantite VALUES (32,0, 808);
+INSERT INTO Quantite VALUES (33,0, 1168.9);
+INSERT INTO Quantite VALUES (34,0, 2139.6);
+INSERT INTO Quantite VALUES (35,0, 665.3);
+INSERT INTO Quantite VALUES (36,0, 1562.2);
+INSERT INTO Quantite VALUES (37,0, 1400.3);
+INSERT INTO Quantite VALUES (38,0, 460);
+INSERT INTO Quantite VALUES (39,0, 5700);
+INSERT INTO Quantite VALUES (40,0, 980);
+INSERT INTO Quantite VALUES (41,0, 949.5);
+INSERT INTO Quantite VALUES (42,0, 2699.1);
+INSERT INTO Quantite VALUES (43,0, 2505.1);
+INSERT INTO Quantite VALUES (44,0, 1739.8);
+INSERT INTO Quantite VALUES (45,0, 1314.4);
+INSERT INTO Quantite VALUES (46,0, 683.5);
+INSERT INTO Quantite VALUES (47,0, 780.2);
+INSERT INTO Quantite VALUES (48,0, 4171.8);
+INSERT INTO Quantite VALUES (49,0, 880);
+INSERT INTO Quantite VALUES (50,0, 1399.1);
+INSERT INTO Quantite VALUES (51,0, 690);
+INSERT INTO Quantite VALUES (52,0, 1260);
+INSERT INTO Quantite VALUES (53,0, 310);
+INSERT INTO Quantite VALUES (54,0, 1117.9);
+INSERT INTO Quantite VALUES (55,0, 1630.3);
+INSERT INTO Quantite VALUES (56,0, 762.9);
+INSERT INTO Quantite VALUES (57,0, 433.1);
+INSERT INTO Quantite VALUES (58,0, 422.1);
+INSERT INTO Quantite VALUES (59,0, 869);
+INSERT INTO Quantite VALUES (60,0, 622.8);
+INSERT INTO Quantite VALUES (61,0, 749);
+INSERT INTO Quantite VALUES (62,0, 400);
+INSERT INTO Quantite VALUES (63,0, 570.6);
+INSERT INTO Quantite VALUES (64,0, 479.1);
+INSERT INTO Quantite VALUES (65,0, 905.2);
+INSERT INTO Quantite VALUES (66,0, 839);
+INSERT INTO Quantite VALUES (67,0, 360);
+INSERT INTO Quantite VALUES (68,0, 579.1);
+INSERT INTO Quantite VALUES (69,0, 1912.9);
+INSERT INTO Quantite VALUES (70,0, 390);
+INSERT INTO Quantite VALUES (71,0, 745.2);
+INSERT INTO Quantite VALUES (72,0, 394.3);
+INSERT INTO Quantite VALUES (73,0, 970);
+INSERT INTO Quantite VALUES (74,0, 314.7);
+INSERT INTO Quantite VALUES (75,0, 627.4);
+INSERT INTO Quantite VALUES (76,0, 420);
+INSERT INTO Quantite VALUES (77,0, 700);
+INSERT INTO Quantite VALUES (78,0, 506.2);

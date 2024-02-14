@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -27,6 +28,21 @@
                         });
                 });
         });
+
+        function saveDescription(idP) {
+                var description = $('#description-' + idP).text();
+                $.ajax({
+                        url: 'saveDescription.php', // L'URL du script PHP qui traitera la mise à jour
+                        type: 'POST',
+                        data: {
+                                idP: idP,
+                                description: description
+                        },
+                        success: function(response) {
+                                alert('Description mise à jour avec succès !');
+                        }
+                });
+        }
 </script>
 <body>
         <header>
@@ -141,8 +157,9 @@
                                                 echo '<td style="background-color:#4fe06a;">'.$item['estimation'].'</td>';
                                         }
                                         ?>
-
-                                        <td><?php echo $item['description']; ?></td>
+                                        <td contenteditable="true" id="description-<?php echo $item['idP']; ?>" onBlur="saveDescription(<?php echo $item['idP']; ?>)">
+                                                <?php echo $item['description']; ?>
+                                        </td>
                                         <td class="sansBordure">
                                                 <a href="?controller=set&action=remove&idP=<?php echo $item['idP'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le produit <?php echo $item['nomP']; ?>');">
                                                         <img class="icone" src="Content/image/remove-icon.png" alt="supprimer"/>
