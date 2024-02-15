@@ -13,6 +13,8 @@ class Controller_home extends Controller{
         $selectPr = $m->getProduit();
         //Récupère toutes les infos d'un produit
         $nomPr = $m->listProduct();
+        $nomPr2 = $m->listProduct();
+
 
 
         //Ajouter un produit et vérifier son existance
@@ -48,41 +50,6 @@ class Controller_home extends Controller{
             header('Location: index.php');
         }
 
-        //Supprimer un produit
-        if (isset($_GET["idP"]) and preg_match("/^[1-9]\d*$/", $_GET["idP"])) {
-            $id = $_GET["idP"];
-            $m->removeProduct($id);
-            header('Location: index.php');
-        }
-
-        //Filtre
-
-        if(isset($_POST["find"]) || isset($_POST["estimationF"])) {
-            // Récupérer la valeur de produitFiltre du formulaire
-            $produitFiltre = htmlspecialchars($_POST["find"]);
-            $estimation    = htmlspecialchars($_POST["estimationF"]);
-
-            // Filtre combiné: si les deux filtres sont utilisés
-            if(!empty($produitFiltre) && !empty($estimation)) {
-                $nomPr = $m->filtrerParIdEtEstimation($produitFiltre, $estimation);
-            }
-            // Filtre par produit uniquement
-            else if(!empty($produitFiltre)) {
-                $nomPr = $m->filtrerParId($produitFiltre);
-            }
-            // Filtre par estimation uniquement
-            else if(!empty($estimation)) {
-                $nomPr = $m->filtrerParEstimation($estimation);
-            }
-            // Aucun filtre spécifique n'est sélectionné, récupérer tous les produits
-            else {
-                $nomPr = $m->listProduct();
-            }
-        } else {
-            // Si aucun formulaire n'a été soumis, récupérer tous les produits
-            $nomPr = $m->listProduct();
-        }
-
         //Importer le fichier XML et convertir les information dans la bdd
         if (!empty($_FILES["fichierXML"])) {
             $tmpPath = $_FILES['fichierXML']['tmp_name'];
@@ -92,7 +59,51 @@ class Controller_home extends Controller{
                 $Mixml   = $mix->Mix_ml;  
                 $m->updateFromXML($mixName, $Mixml);  
             }
+            header('Location: index.php');
         }
+
+        //Supprimer un produit
+        if (isset($_GET["idP"]) and preg_match("/^[1-9]\d*$/", $_GET["idP"])) {
+            $id = $_GET["idP"];
+            $m->removeProduct($id);
+            header('Location: index.php');
+        }
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $itemsPerPage = 20;
+        $offset = ($page - 1) * $itemsPerPage;
+
+        //Filtre
+        if(isset($_POST["find"]) || isset($_POST["estimationF"])) {
+            // Récupérer la valeur de produitFiltre du formulaire
+            $produitFiltre = htmlspecialchars($_POST["find"]);
+            $estimation    = htmlspecialchars($_POST["estimationF"]);
+            // Filtre combiné: si les deux filtres sont utilisés
+            if(!empty($produitFiltre) && !empty($estimation)) {
+                $nomPr = $m->filtrerParIdEtEstimation($produitFiltre, $estimation);
+                $totalProducts = count($nomPr);
+            }
+            // Filtre par produit uniquement
+            else if(!empty($produitFiltre)) {
+                $nomPr = $m->filtrerParId($produitFiltre);
+                $totalProducts = count($nomPr);
+            }
+            // Filtre par estimation uniquement
+            else if(!empty($estimation)) {
+                $nomPr = $m->filtrerParEstimation($estimation);
+                $totalProducts = count($nomPr);
+            }
+            // Aucun filtre spécifique n'est sélectionné, récupérer tous les produits
+            else {
+                $nomPr = $m->listProduct();
+                $totalProducts = count($nomPr);
+            }
+        } else {
+            // Si aucun formulaire n'a été soumis, récupérer tous les produits
+            $nomPr = $m->listProductPaginated($offset, $itemsPerPage);
+            $totalProducts = $m->getTotalProductsCount();
+        }
+        $totalPages = ceil($totalProducts / $itemsPerPage);
 
         //Affichage du graphique 
         $nom = 1;
@@ -102,21 +113,12 @@ class Controller_home extends Controller{
         $result      = $m->graphique($nom);
         $donneesJson = json_encode($result);
 
-        //Modifier la description
-        if (isset($_POST['idP']) && isset($_POST['description'])) {
-            $idP         = $_POST['idP'];
-            $description = htmlspecialchars($_POST['description']);
-            $m->updateDesc($description,$idP);
-    
-            echo "Description mise à jour.";
-        }
-
         /**
         * Affiche la vue
         * @param 'home' nom de la vue
         * @param array $data tableau contenant les données à passer à la vue
         */
-        $data = ['errorP'=>$errorP, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson];
+        $data = ['totalPages' => $totalPages, 'currentPage' => $page, 'errorP'=>$errorP,'nomPr2'=>$nomPr2, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson];
         $this->render('home', $data);
     }
 

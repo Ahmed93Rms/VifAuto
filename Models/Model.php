@@ -172,9 +172,18 @@ class Model {
         return $req->fetchAll();
     }
 
-    public function updateDesc($description, $idP) {
-        $req = $this->db->prepare('UPDATE Produits SET description = ? WHERE idP = ?');
-        $req->execute([$description, $idP]); 
+    public function getTotalProductsCount() {
+        $req = $this->db->prepare('SELECT COUNT(*) FROM Produits');
+        $req->execute();
+        return $req->fetchColumn();
+    }
+
+    public function listProductPaginated($offset = 0, $limit = 25) {
+        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Quantite.quantite, Quantite.estimation FROM Produits LEFT JOIN Quantite ON Produits.idP = Quantite.idP ORDER BY Produits.nomP LIMIT :offset, :limit');
+        $req->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $req->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $req->execute();
+        return $req->fetchAll();
     }
 
 }

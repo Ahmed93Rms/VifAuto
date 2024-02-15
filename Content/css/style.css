@@ -248,6 +248,31 @@ footer {
     height: 150px;
 }
 
+/*-----------------------------Pagination---------------------------*/
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page {
+    margin: 0 20px;
+    border: 1px solid black;
+    padding: 7px;
+
+}
+
+.page:hover {
+    background-color: #bbbbbb;
+}
+
+.pagea {
+    text-decoration: none;
+    color: black;
+    padding: 7px;
+}
+
 /*-----------------------------Responsive---------------------------*/
 
 @media screen and (max-width: 1050px) {

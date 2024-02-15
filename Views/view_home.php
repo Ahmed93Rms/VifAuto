@@ -11,38 +11,19 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 <script>
         document.addEventListener('DOMContentLoaded', function() {
-        // Sélectionner tous les éléments <h1> dans les blocs
         const headers = document.querySelectorAll('.block > h1');
 
                 headers.forEach(header => {
                         header.addEventListener('click', function() {
-                        // Trouver le formulaire frère directement après le <h1> cliqué
                         const form = this.nextElementSibling;
 
-                        // Basculer l'affichage du formulaire
                         form.style.display = form.style.display === 'block' ? 'none' : 'block';
                         });
                 });
         });
-
-        function saveDescription(idP) {
-                var description = $('#description-' + idP).text();
-                $.ajax({
-                        url: 'saveDescription.php', // L'URL du script PHP qui traitera la mise à jour
-                        type: 'POST',
-                        data: {
-                                idP: idP,
-                                description: description
-                        },
-                        success: function(response) {
-                                alert('Description mise à jour avec succès !');
-                        }
-                });
-        }
 </script>
 <body>
         <header>
@@ -150,7 +131,7 @@
                                         <!-- Couleur dans la colonne estimation -->
                                         <?php if ($item['estimation'] <= 150) {
                                                 echo '<td style="background-color:#e04f4f;">'.$item['estimation'].'</td>';
-                                        } elseif ($item['estimation'] <= 500){
+                                        } elseif ($item['estimation'] <= 400){
                                                 echo '<td style="background-color:#e0b04f;">'.$item['estimation'].'</td>';
                                         }
                                         else {
@@ -166,9 +147,17 @@
                                                 </a>
                                         </td>
                                 </tr>
-                                <?php endforeach ?> 
-                                
-                        </table>                        
+                                <?php endforeach ?>                                
+                        </table>     
+                        <div>
+                                <div class="pagination">
+                                        <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                                        <div class="page <?php echo $i == $currentPage ? 'active' : ''; ?>">
+                                                <a class="pagea" href="?page=<?php echo $i; ?>#list"><?php echo $i; ?></a>
+                                        </div>
+                                        <?php endfor; ?>
+                                </div>
+                        </div>                 
                 </section>
                 <section class="graph" id="graph">
                         <h1 class="center">Evolution d'un produits</h1>
