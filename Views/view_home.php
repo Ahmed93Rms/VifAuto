@@ -47,7 +47,6 @@
                                         <div>Contenance du produit(mL) : <input type="text" name="litre" required></div>
                                         <div class="textDesc">Description : <textarea name="desc" placeholder="facultatif"></textarea></div>
                                         <button type="submit" class="bt blue2">Ajouter</button>
-                                        <?php echo $errorP; ?>
                                 </form>
                         </div>
                         <div class="block green">
@@ -185,7 +184,7 @@
                                         data: {
                                                 labels: donnees.map(d => d.date), // Extraction des dates pour les labels de l'axe X
                                                 datasets: [{
-                                                label: '',
+                                                label: 'Produit : <?php echo htmlspecialchars($nomProduit); ?>',
                                                 backgroundColor: 'rgb(0,0,0)',
                                                 borderColor: 'rgb(0,0,0)',
                                                 data: donnees.map(d => d.valeur), // Extraction des valeurs pour l'axe Y
@@ -203,5 +202,3 @@
         </footer>
 </body>
 </html>
-
-<!--import.XML, graphique -->

@@ -5,7 +5,6 @@ class Controller_home extends Controller{
     public function action_home()
     {
         //Initialisation des variables
-        $errorP  ="";
         $alert    = ""; 
 
         $m = Model::getModel();
@@ -13,7 +12,6 @@ class Controller_home extends Controller{
         $selectPr = $m->getProduit();
         //Récupère toutes les infos d'un produit
         $nomPr = $m->listProduct();
-        $nomPr2 = $m->listProduct();
 
 
 
@@ -24,7 +22,7 @@ class Controller_home extends Controller{
             $description = htmlspecialchars($_POST["desc"]); 
 
             if ($m->productExists($name)) {
-                $errorP = '<p style="color:red; text-align:center;">Ce produit existe deja.</p>';
+                echo '<script>alert("Ce produit existe déja")</script>';
             } else {
                 $m->addProduct($name, $contenance, $description);
                 header('Location: index.php');
@@ -109,16 +107,25 @@ class Controller_home extends Controller{
         $nom = 1;
         if (isset($_POST["produitG"])) {
             $nom = htmlspecialchars($_POST["produitG"]);
+            $result      = $m->graphique($nom);
+            $donneesJson = json_encode($result);
+            $nomProduit = $m->getProductNameById($nom);
+            echo '<script type="text/javascript">';
+            echo 'window.location.href="' . $_SERVER['PHP_SELF'] . '#graph";';
+            echo '</script>';
+        } else {
+            $result = [];
+            $donneesJson = json_encode($result);
+            $nomProduit = "";      
         }
-        $result      = $m->graphique($nom);
-        $donneesJson = json_encode($result);
 
         /**
         * Affiche la vue
         * @param 'home' nom de la vue
         * @param array $data tableau contenant les données à passer à la vue
         */
-        $data = ['totalPages' => $totalPages, 'currentPage' => $page, 'errorP'=>$errorP,'nomPr2'=>$nomPr2, 'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson];
+        $data = ['nomProduit' => $nomProduit, 'totalPages' => $totalPages, 'currentPage' => $page,
+        'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson];
         $this->render('home', $data);
     }
 

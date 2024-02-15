@@ -186,4 +186,11 @@ class Model {
         return $req->fetchAll();
     }
 
+    public function getProductNameById($idP) {
+        $req = $this->db->prepare('SELECT nomP FROM Produits WHERE idP = ?');
+        $req->execute([$idP]);
+        $row = $req->fetch();
+        return $row ? $row['nomP'] : null;
+    }
+
 }
