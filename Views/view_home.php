@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">   
-
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -10,8 +9,8 @@
         <link rel="icon" href="Content/image/vifauto.png" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 </head>
+
 <script>
         document.addEventListener('DOMContentLoaded', function() {
         const headers = document.querySelectorAll('.block > h1');
@@ -25,6 +24,7 @@
                 });
         });
 </script>
+
 <body>
         <header>
                 <nav class="nb">
@@ -38,7 +38,7 @@
         </header>
         <main>
                 <h1 class="center" style="margin-top: 100px;" id="import">Modifier votre liste de produit</h1>
-                <p class="grey center"><u>Pour les valeurs decimal, il faut mettre un point et pas une virgule. (Ex: 317.5)</u></p>
+                <h3 class="grey center"><u>Pour les valeurs decimal, il faut mettre un point et pas une virgule. (Ex: 317.5)</u></h3>
                 <section class="form">
                         <div class="block blue">
                                 <h1 style="color: #0085FF; cursor: pointer;">Ajouter un produit inexistant</h1>
@@ -142,8 +142,7 @@
                                         </td>
                                         <td class="sansBordure">
                                                 <a href="?controller=set&action=remove&idP=<?php echo $item['idP'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le produit <?php echo $item['nomP']; ?>');">
-                                                        <img class="icone" src="Content/image/remove-icon.png" alt="supprimer"/>
-                                                </a>
+                                                <span class="material-symbols-outlined black2" >delete</span>                                                </a>
                                         </td>
                                 </tr>
                                 <?php endforeach ?>                                

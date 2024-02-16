@@ -6,9 +6,8 @@ valeurs = [
     471, 472, 480, 481, 495, 496, 500, 501, 502, 503, 504, 505, 822, 825
 ]
 
-# S'assurer que le nombre d'éléments dans 'valeurs' correspond au nombre d'IDs à insérer
-#for i in range(80):
-   #print(f"INSERT INTO Produits VALUES ({i + 1}, {valeurs[i]}, 1000, "");")
+for i in range(len(valeurs)):
+   print(f"INSERT INTO Produits VALUES ({i + 1}, {valeurs[i]}, 1000, "");")
 
 qtt = [
     1299.2, 804.8, 1334.1, 499.7, 390, 938.5, 774.2, 337.5, 748.1, 281.7, 923.5, 330, 852.3,
@@ -19,5 +18,5 @@ qtt = [
     905.2, 839, 360, 579.1, 1912.9, 390, 745.2, 394.3, 970, 314.7, 627.4, 420, 700, 506.2
 ]
 
-for i in range(80):
-    print(f"INSERT INTO Quantite VALUES ({i + 1},0, {qtt[i]});")
+#for i in range(len(qtt)):
+    #print(f"INSERT INTO Quantite VALUES ({i + 1},0, {qtt[i]});")

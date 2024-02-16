@@ -51,6 +51,10 @@ h1 {
     background-color: #FF0000;
 }
 
+.black2 {
+    color: #000000;
+}
+
 .grey {
     color: #3b3b3b;
 }
@@ -207,10 +211,6 @@ table tr:hover {
     border : 0px; 
     width : 30px; 
     padding-left : 0px;
-}
-
-img.icone { 
-    width: 16px;
 }
 
 .alert {
