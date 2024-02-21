@@ -94,7 +94,7 @@
                                                 warning
                                                 </span>
                                                 Le produit '.$produit['nomP'].' est épuisé.</div>';
-                                        } elseif ($produit['estimation'] < 150) {
+                                        } elseif ($produit['estimation'] < $produit['alerte']) {
                                                 echo '<div class="alert">
                                                 <span class="material-symbols-outlined">
                                                 warning
@@ -128,9 +128,9 @@
                                         <td><?php echo $item['contenanceP']; ?></td>
                                         <td><?php echo $item['quantite']; ?></td>
                                         <!-- Couleur dans la colonne estimation -->
-                                        <?php if ($item['estimation'] <= 150) {
+                                        <?php if ($item['estimation'] <= 0) {
                                                 echo '<td style="background-color:#e04f4f;">'.$item['estimation'].'</td>';
-                                        } elseif ($item['estimation'] <= 400){
+                                        } elseif ($item['estimation'] <= $item['alerte']){
                                                 echo '<td style="background-color:#e0b04f;">'.$item['estimation'].'</td>';
                                         }
                                         else {
@@ -192,6 +192,19 @@
                                         options: {}
                                         });
                                         </script>
+                                </article>
+                                <article class="infoP">
+                                        <div>Moyenne du produit : <?php echo $moyenne; ?></div>
+                                        <div>Médianne du produit : <?php echo $median; ?></div>
+                                        <form action="?controller=home&action=home" method="post">
+                                                <div>Créer une alerte : <select id="productSelect" name="nomInfo" required>
+                                                                        <?php foreach ($selectPr as $p): ?>
+                                                                        <option value="<?php echo $p['idP']; ?>"><?php echo $p['nomP']; ?></option>
+                                                                        <?php endforeach; ?>
+                                                                        </select>
+                                                <input type="number" size="3" name="alert">
+                                                <button type="submit">Créer</button></div>
+                                        </form>
                                 </article>
                         </div>
                 </section>

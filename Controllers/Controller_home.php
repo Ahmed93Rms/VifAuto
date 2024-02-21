@@ -2,6 +2,27 @@
 
 class Controller_home extends Controller{
 
+    //Fonction qui calcule la medianne
+    private function calculMedian($values) {
+        sort($values);
+        $count = count($values);
+        $moy = floor(($count-1)/2);
+        if ($count % 2) { // Impair
+            $median = $values[$moy];
+        } else { // Pair
+            $median = ($values[$moy]+$values[$moy+1]) / 2;
+        }
+        return $median;
+    }
+
+    //Fonction qui calcule la moyenne
+    private function calculMoyenne($values) {
+        if (count($values) === 0) return 0;
+        $sum = array_sum($values);
+        $moyenne = $sum / count($values);
+        return $moyenne;
+    }
+
     public function action_home()
     {
         //Initialisation des variables
@@ -106,17 +127,31 @@ class Controller_home extends Controller{
         //Affichage du graphique 
         $nom = 1;
         if (isset($_POST["produitG"])) {
-            $nom = htmlspecialchars($_POST["produitG"]);
+            $nom         = htmlspecialchars($_POST["produitG"]);
+            $values      = $m->infoP($nom);
+            $median      = round($this->calculMedian($values), 1);
+            $moyenne     = round($this->calculMoyenne($values), 1);
             $result      = $m->graphique($nom);
             $donneesJson = json_encode($result);
-            $nomProduit = $m->getProductNameById($nom);
+            $nomProduit  = $m->getProductNameById($nom);
             echo '<script type="text/javascript">';
             echo 'window.location.href="' . $_SERVER['PHP_SELF'] . '#graph";';
             echo '</script>';
         } else {
             $result = [];
             $donneesJson = json_encode($result);
+            $median      = 0;
+            $moyenne     = 0;
             $nomProduit = "";      
+        }
+
+        if(isset($_POST["alert"])) {
+            $nom   = htmlspecialchars($_POST["nomInfo"]);
+            $alert = htmlspecialchars($_POST["alert"]);
+            $m->updateAlert($nom, $alert);
+            echo '<script type="text/javascript">';
+            echo 'window.location.href="' . $_SERVER['PHP_SELF'] . '#graph";';
+            echo '</script>';
         }
 
         /**
@@ -125,7 +160,8 @@ class Controller_home extends Controller{
         * @param array $data tableau contenant les données à passer à la vue
         */
         $data = ['nomProduit' => $nomProduit, 'totalPages' => $totalPages, 'currentPage' => $page,
-        'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson];
+        'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson,
+        'median'=>$median, 'moyenne'=>$moyenne];
         $this->render('home', $data);
     }
 

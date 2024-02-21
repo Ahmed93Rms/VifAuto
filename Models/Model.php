@@ -52,7 +52,7 @@ class Model {
      * Méthode permettant de lister tous les produits avec une liaison des tables dfans la bdd
      */
     public function listProduct() {
-        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description,Quantite.quantite, Quantite.estimation
+        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM Produits
         LEFT JOIN Quantite ON Produits.idP = Quantite.idP ORDER BY Produits.nomP');
         $req->execute();
@@ -64,7 +64,7 @@ class Model {
      * @param int $produitId
      */
     public function filtrerParId($produitId) {
-        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description,Quantite.quantite, Quantite.estimation
+        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM produits 
         LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Produits.nomP = ?');
         $req->execute([$produitId]);
@@ -77,7 +77,7 @@ class Model {
      */
     public function filtrerParEstimation($estimation)
     {
-        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description,Quantite.quantite, Quantite.estimation
+        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM produits 
         LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Quantite.estimation <= ?');
         $req->execute([$estimation]);
@@ -91,7 +91,7 @@ class Model {
      */
     public function filtrerParIdEtEstimation($produitId, $estimation)
     {
-        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description,Quantite.quantite, Quantite.estimation
+        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM produits 
         LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Produits.nomP = ? AND Quantite.estimation <= ?');
         $req->execute([$produitId, $estimation]);
@@ -172,6 +172,12 @@ class Model {
         return $req->fetchAll();
     }
 
+    public function infoP($nomP) {
+        $req = $this->db->prepare('SELECT valeur FROM graphique WHERE idP = ? ORDER BY date');
+        $req->execute([$nomP]);
+        return $req->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
     public function getTotalProductsCount() {
         $req = $this->db->prepare('SELECT COUNT(*) FROM Produits');
         $req->execute();
@@ -179,7 +185,7 @@ class Model {
     }
 
     public function listProductPaginated($offset = 0, $limit = 25) {
-        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Quantite.quantite, Quantite.estimation FROM Produits LEFT JOIN Quantite ON Produits.idP = Quantite.idP ORDER BY Produits.nomP LIMIT :offset, :limit');
+        $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation FROM Produits LEFT JOIN Quantite ON Produits.idP = Quantite.idP ORDER BY Produits.nomP LIMIT :offset, :limit');
         $req->bindParam(':offset', $offset, PDO::PARAM_INT);
         $req->bindParam(':limit', $limit, PDO::PARAM_INT);
         $req->execute();
@@ -191,6 +197,12 @@ class Model {
         $req->execute([$idP]);
         $row = $req->fetch();
         return $row ? $row['nomP'] : null;
+    }
+
+    public function updateAlert($nomP, $alert) {
+        $req = $this->db->prepare('UPDATE Produits SET alerte = ? WHERE idP = ?');
+        $req->execute([$alert, $nomP]);
+        return $req->fetchAll();
     }
 
 }
