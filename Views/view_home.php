@@ -119,6 +119,7 @@
                                         <th>Quantité</th>
                                         <th>Estimation(mL)</th>
                                         <th>Description</th>
+                                        <th>Alerte</th>
                                         <th class="sansBordure"></th>
                                 </tr>
                                 <!-- Recuperation des infos dans la bdd pour la liste -->
@@ -146,6 +147,7 @@
                                         <td contenteditable="true" id="description-<?php echo $item['idP']; ?>" onBlur="saveDescription(<?php echo $item['idP']; ?>)">
                                                 <?php echo $item['description']; ?>
                                         </td>
+                                        <td><?php echo $item['alerte']; ?></td>
                                         <td class="sansBordure">
                                                 <a href="?controller=set&action=remove&idP=<?php echo $item['idP'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le produit <?php echo $item['nomP']; ?>');">
                                                 <span class="material-symbols-outlined black2" >delete</span>                                                </a>
