@@ -66,7 +66,7 @@ class Model {
     public function filtrerParId($produitId) {
         $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM produits 
-        LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Produits.nomP = ?');
+        LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Produits.nomP = ? ORDER BY Produits.nomP');
         $req->execute([$produitId]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -79,7 +79,7 @@ class Model {
     {
         $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM produits 
-        LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Quantite.estimation <= ?');
+        LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Quantite.estimation <= ? ORDER BY Produits.nomP');
         $req->execute([$estimation]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -93,7 +93,7 @@ class Model {
     {
         $req = $this->db->prepare('SELECT Produits.idP, Produits.nomP, Produits.contenanceP, Produits.description, Produits.alerte, Quantite.quantite, Quantite.estimation
         FROM produits 
-        LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Produits.nomP = ? AND Quantite.estimation <= ?');
+        LEFT JOIN Quantite ON Produits.idP = Quantite.idP WHERE Produits.nomP = ? AND Quantite.estimation <= ? ORDER BY Produits.nomP');
         $req->execute([$produitId, $estimation]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -167,7 +167,7 @@ class Model {
     }
 
     public function graphique($nomP) {
-        $req = $this->db->prepare('SELECT valeur, date FROM graphique WHERE idP = ?');
+        $req = $this->db->prepare('SELECT valeur, date FROM graphique WHERE idP = ? ORDER BY date, valeur desc');
         $req->execute([$nomP]);
         return $req->fetchAll();
     }
@@ -203,6 +203,19 @@ class Model {
         $req = $this->db->prepare('UPDATE Produits SET alerte = ? WHERE idP = ?');
         $req->execute([$alert, $nomP]);
         return $req->fetchAll();
+    }
+
+    public function augmenterEstimationAvecContenance($idP) {
+        $Contenance = $this->db->prepare('SELECT contenanceP FROM Produits WHERE idP = ?');
+        $Contenance->execute([$idP]);
+        $result = $Contenance->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result && isset($result['contenanceP'])) {
+            $contenanceP = $result['contenanceP'];
+
+            $Update = $this->db->prepare('UPDATE Quantite SET estimation = estimation + ? WHERE idP = ?');
+            $Update->execute([$contenanceP, $idP]);
+        }
     }
 
 }

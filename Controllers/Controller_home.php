@@ -81,6 +81,15 @@ class Controller_home extends Controller{
             header('Location: index.php');
         }
 
+        //Bouton ajouter
+        if (isset($_POST['augmenterQuantite']) && isset($_POST['idP'])) {
+            $idP = $_POST['idP'];
+            $m->augmenterEstimationAvecContenance($idP);
+            echo '<script type="text/javascript">';
+            echo 'window.location.href="' . $_SERVER['PHP_SELF'] . '#list";';
+            echo '</script>';
+        }
+
         //Supprimer un produit
         if (isset($_GET["idP"]) and preg_match("/^[1-9]\d*$/", $_GET["idP"])) {
             $id = $_GET["idP"];
@@ -153,6 +162,8 @@ class Controller_home extends Controller{
             echo 'window.location.href="' . $_SERVER['PHP_SELF'] . '#graph";';
             echo '</script>';
         }
+
+
 
         /**
         * Affiche la vue

@@ -221,6 +221,20 @@ table tr:hover {
     justify-content: center;
 }
 
+.qtt {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-width: 1px; 
+    border-color: rgb(153, 153, 153);
+}
+
+.bt_qtt {
+    background: #c4c4c4;
+    border: 0;
+    cursor: pointer;
+}
+
 /*------------------------------Graphique---------------------------*/
 #graph {
     margin-bottom: 30px;

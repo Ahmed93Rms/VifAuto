@@ -85,6 +85,7 @@
                 </section>
                 <section class="list" id="list">
                         <h1 class="center">Liste des produits</h1>
+
                         <!-- Affichage des alertes -->
                         <?php
                                 foreach ($nomPr as $produit) {
@@ -103,7 +104,6 @@
                                         }
                                 }
                         ?>
-                        
                         <form action="?controller=home&action=home" method="post" style="text-align: center;">
                                 <div>Retrouver un produit : 
                                 <input type="text" name="find" placeholder="Entrez une valeur" />
@@ -126,7 +126,13 @@
                                 <tr>
                                         <td><?php echo $item['nomP']; ?></td>
                                         <td><?php echo $item['contenanceP']; ?></td>
-                                        <td><?php echo $item['quantite']; ?></td>
+                                        <td class="qtt">
+                                                <?php echo $item['quantite']; ?>
+                                                <form action="?controller=home&action=home" method="post" class="qtt" onclick="return confirm('Êtes-vous sûr de vouloir ajouter un pot du produit <?php echo $item['nomP']; ?>');">
+                                                        <input type="hidden" name="idP" value="<?php echo $item['idP']; ?>">
+                                                        <button type="submit" name="augmenterQuantite" class="bt_qtt"><span class="material-symbols-outlined black2" >add</span></button>
+                                                </form>
+                                                </td>
                                         <!-- Couleur dans la colonne estimation -->
                                         <?php if ($item['estimation'] <= 0) {
                                                 echo '<td style="background-color:#e04f4f;">'.$item['estimation'].'</td>';
@@ -197,13 +203,13 @@
                                         <div>Moyenne du produit : <?php echo $moyenne; ?></div>
                                         <div>Médianne du produit : <?php echo $median; ?></div>
                                         <form action="?controller=home&action=home" method="post">
-                                                <div>Créer une alerte : <select id="productSelect" name="nomInfo" required>
+                                                <div>Modifier une alerte : <select id="productSelect" name="nomInfo" required>
                                                                         <?php foreach ($selectPr as $p): ?>
                                                                         <option value="<?php echo $p['idP']; ?>"><?php echo $p['nomP']; ?></option>
                                                                         <?php endforeach; ?>
                                                                         </select>
                                                 <input type="number" size="3" name="alert">
-                                                <button type="submit">Créer</button></div>
+                                                <button type="submit">Modifier</button></div>
                                         </form>
                                 </article>
                         </div>
