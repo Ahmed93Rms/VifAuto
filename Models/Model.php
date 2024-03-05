@@ -152,6 +152,33 @@ class Model {
         return (bool) $req->rowCount();
     }
 
+
+    public function testFromXML($nomProduit, $quantiteMl) {
+        $req = $this->db->prepare('SELECT produits.nomP, quantite.estimation
+        FROM quantite
+        INNER JOIN produits ON quantite.idP = produits.idP
+        WHERE produits.nomP = ?');
+        $req->execute([$nomProduit]);
+        $res = $req->fetchAll(PDO::FETCH_ASSOC);
+    
+        if (count($res) > 0) {
+            $estimation = $res[0]['estimation'];
+            $nomP       = $res[0]['nomP'];
+            if ($estimation > ($quantiteMl*2)) {
+                $message = "La quantité du produit $nomP est largement suffisante pour cette vente.";
+            } else if ($quantiteMl >= $estimation && $quantiteMl > ($estimation * 2)) {
+                $message = "La quantité du produit $nomP ne permet pas la vente.";
+            } else {
+                $message = "La quantité du produit $nomP est suffisante pour cette vente mais pensez à vous approvisionner.";
+            }
+        } else {
+            $message = "Aucun produit trouvé pour le nom spécifié.";
+        }
+    
+        return ['message' => $message];
+    }
+
+
     public function updateFromXML($nomProduit, $quantiteMl) {
         $req = $this->db->prepare('SELECT idP FROM Produits WHERE nomP = ?');
         $req->execute([$nomProduit]);
@@ -159,11 +186,16 @@ class Model {
 
         if ($idP) {
             $req = $this->db->prepare('UPDATE Quantite SET estimation = estimation - ? WHERE idP = ?');
-            // Passer $idP qui est une valeur scalaire, pas un tableau
             $req->execute([$quantiteMl, $idP]);
         } else {
             echo "Produit non trouvé : " . $nomProduit . "\n";
         }
+    }
+
+    public function getAlertesProduits() {
+        $req = $this->db->prepare('SELECT nomP, estimation, alerte FROM produits JOIN quantite ON produits.idP = quantite.idP');
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function graphique($nomP) {
@@ -173,7 +205,7 @@ class Model {
     }
 
     public function infoP($nomP) {
-        $req = $this->db->prepare('SELECT valeur FROM graphique WHERE idP = ? ORDER BY date');
+        $req = $this->db->prepare('SELECT ecart FROM graphique WHERE idP = ? AND ecart IS NOT NULL ORDER BY date');
         $req->execute([$nomP]);
         return $req->fetchAll(PDO::FETCH_COLUMN, 0);
     }

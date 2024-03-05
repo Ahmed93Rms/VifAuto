@@ -78,7 +78,21 @@
                         </div>
                 </section>
                 <section id="XML" class ="import">
-                        <form action="?controller=home&action=home" method="post" enctype="multipart/form-data">
+                        <form action="?controller=home&action=home" method="post" enctype="multipart/form-data" class="formXml">
+                                <div>Tester un fichier XML : <input type="file" name="testXML" required/></div>
+                                <button type="submit" class="bt black">Importer</button>
+                        </form>
+                        <?php
+                                // Vérifier si $results existe et n'est pas vide
+                                if (!empty($results)) {
+                                echo "<div class='results'>";
+                                foreach ($results as $message) {
+                                        echo "<p>$message</p>"; // Afficher chaque message
+                                }
+                                echo "</div>";
+                                }
+                        ?>
+                        <form action="?controller=home&action=home" method="post" enctype="multipart/form-data" class="formXml">
                                 <div>Importer un fichier XML : <input type="file" name="fichierXML" required/></div>
                                 <button type="submit" class="bt black">Importer</button>
                         </form>
@@ -102,6 +116,19 @@
                                                 </span>
                                                 Le produit '.$produit['nomP'].' risque d\'être épuiser.</div>';
                                         }
+                                }
+                        ?>
+                        <?php
+                                foreach ($alertes as $produit) {
+                                if ($produit['estimation'] == 0) {
+                                        echo '<div class="alert">
+                                        <span class="material-symbols-outlined">warning</span>
+                                        Le produit '.$produit['nomP'].' est épuisé.</div>';
+                                } elseif ($produit['estimation'] < $produit['alerte']) {
+                                        echo '<div class="alert">
+                                        <span class="material-symbols-outlined">warning</span>
+                                        Le produit '.$produit['nomP'].' risque d\'être épuisé.</div>';
+                                }
                                 }
                         ?>
                         <form action="?controller=home&action=home" method="post" style="text-align: center;">
@@ -202,8 +229,8 @@
                                         </script>
                                 </article>
                                 <article class="infoP">
-                                        <div>Moyenne du produit : <?php echo $moyenne; ?></div>
-                                        <div>Médianne du produit : <?php echo $median; ?></div>
+                                        <div>Moyenne de la quantité utilisée par le produit : <?php echo $moyenne; ?></div>
+                                        <div>Médianne de la quantité utilisée par le produit : <?php echo $median; ?></div>
                                         <form action="?controller=home&action=home" method="post">
                                                 <div>Modifier une alerte : <select id="productSelect" name="nomInfo" required>
                                                                         <?php foreach ($selectPr as $p): ?>

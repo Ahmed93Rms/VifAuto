@@ -69,6 +69,19 @@ class Controller_home extends Controller{
             header('Location: index.php');
         }
 
+        //Tester le fichier XML
+        $results = []; 
+        if (!empty($_FILES["testXML"])) {
+            $tmpPath = $_FILES['testXML']['tmp_name'];
+            $xmldata = simplexml_load_file($tmpPath) or die("Failed to load");
+            foreach($xmldata->Session->Formulation->Mix as $mix) {
+                $mixName = preg_replace('/\D/', '', $mix->Mix_name);
+                $Mixml = $mix->Mix_ml;  
+                $result = $m->testFromXML($mixName, $Mixml);  
+                array_push($results, $result['message']); // Ajouter le message au tableau des résultats
+            }
+        }
+
         //Importer le fichier XML et convertir les information dans la bdd
         if (!empty($_FILES["fichierXML"])) {
             $tmpPath = $_FILES['fichierXML']['tmp_name'];
@@ -100,6 +113,7 @@ class Controller_home extends Controller{
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $itemsPerPage = 20;
         $offset = ($page - 1) * $itemsPerPage;
+        $alertes = $m->getAlertesProduits();
 
         //Filtre
         if(isset($_POST["find"]) || isset($_POST["estimationF"])) {
@@ -172,7 +186,7 @@ class Controller_home extends Controller{
         */
         $data = ['nomProduit' => $nomProduit, 'totalPages' => $totalPages, 'currentPage' => $page,
         'nomPr'=>$nomPr, 'selectPr'=>$selectPr, 'alert'=>$alert, 'donneesJson'=>$donneesJson,
-        'median'=>$median, 'moyenne'=>$moyenne];
+        'median'=>$median, 'moyenne'=>$moyenne, 'results'=>$results, 'alertes' => $alertes];
         $this->render('home', $data);
     }
 

@@ -25,7 +25,8 @@ DROP TABLE IF EXISTS `graphique`;
 CREATE TABLE IF NOT EXISTS `graphique` (
   `idP` int NOT NULL,
   `valeur` varchar(100) DEFAULT NULL,
-  `date` datetime DEFAULT CURRENT_TIMESTAMP
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  'ecart' FLOAT DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TRIGGER IF EXISTS `ajuster_quantite_avant_insert`;
@@ -72,6 +73,25 @@ CREATE TRIGGER `estimation_non_negative` BEFORE UPDATE ON `quantite` FOR EACH RO
     END IF;
 END
 $$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `calculer_ecart`;
+DELIMITER $$
+CREATE TRIGGER calculer_ecart
+BEFORE INSERT ON graphique
+FOR EACH ROW
+BEGIN
+    DECLARE derniereValeur FLOAT;
+    
+    SELECT valeur INTO derniereValeur
+    FROM graphique
+    WHERE idP = NEW.idP
+    ORDER BY date DESC
+    LIMIT 1;
+    
+    IF derniereValeur IS NOT NULL THEN
+        SET NEW.ecart = ABS(NEW.valeur - derniereValeur);
+    END IF;
+END$$
 DELIMITER ;
 COMMIT;
 
