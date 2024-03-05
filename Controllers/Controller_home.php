@@ -4,13 +4,14 @@ class Controller_home extends Controller{
 
     //Fonction qui calcule la medianne
     private function calculMedian($values) {
+        if (count($values) === 0) return 0;
         sort($values);
         $count = count($values);
         $moy = floor(($count-1)/2);
         if ($count % 2) { // Impair
             $median = $values[$moy];
         } else { // Pair
-            $median = ($values[$moy]+$values[$moy+1]) / 2;
+            $median = ($values[$moy] + $values[$moy+1]) / 2;
         }
         return $median;
     }
